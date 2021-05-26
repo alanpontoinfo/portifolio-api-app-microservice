@@ -26,12 +26,32 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/timestamp", function(req,res){
+  var now = new Date();
+  res.json({"unix": now.getTime(),
+   "utc":now.toUTCString()
+});
+});
 
 app.get("/api/timestamp/:date_string", function(req, res){
 
   let dateString = req.params.date_string;
-  console.log(dateString);
+
+if(parsedInt(dateString)>10000){
+  let unixTime= new Date(parsedInt(dateString));
+  res.json({
+    "unix": unixTime.getTime(),
+    "utc":unixTime.toUTCString()
+  });
+}
+  let passDateValue = new Date(dateString);
+  if(passDateValue == "invalid Value"){
   res.json({"error": "Invalid Date"});
+}else{
+  res.json({"unix": passDateValue.getTime(),
+"utc":passDateValue.toUTCString()
+})
+}
 });
 
 // listen for requests :)
