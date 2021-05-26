@@ -50,7 +50,7 @@ if(parseInt(dateString) > 10000){
   let passDateValue = new Date(dateString);
 
   if(passDateValue == "invalid Date"){
-  res.json({"error": "Invalid Date"});
+  res.json({error: "Invalid Date"});
 }
  else 
 { 
