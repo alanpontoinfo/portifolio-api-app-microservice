@@ -29,9 +29,10 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api", function(req,res){
+app.get("/api", function(req, res){
   var now = new Date();
-  res.json({"unix": now.getTime(),
+  
+ res.json({"unix": now.getTime(),
             "utc": now.toUTCString()
 });
 });
@@ -49,7 +50,7 @@ if (parseInt(dateString) > 10000){
 }
   let passDateValue = new Date(dateString);
 
-  if (passDateValue == "Invalid Date"){
+  if (passDateValue == "Invalid Date" ) {
   res.json({"error": "Invalid Date"});
 }
  else 
