@@ -14,11 +14,14 @@ app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 20
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
-// http://expressjs.com/en/starter/basic-routing.html
+//http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+app.get("/timestamp", function(req , res){
+  res.sendFile(__dirname + '/views/timestamp.html');
+});
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
@@ -29,7 +32,7 @@ app.get("/api/hello", function (req, res) {
 app.get("/api/timestamp", function(req,res){
   var now = new Date();
   res.json({"unix": now.getTime(),
-   "utc":now.toUTCString()
+            "utc": now.toUTCString()
 });
 });
 
@@ -37,19 +40,22 @@ app.get("/api/timestamp/:date_string", function(req, res){
 
   let dateString = req.params.date_string;
 
-if(parsedInt(dateString)>10000){
-  let unixTime= new Date(parsedInt(dateString));
+if(parseInt(dateString)>10000){
+  let unixTime = new Date(parseInt(dateString));
   res.json({
     "unix": unixTime.getTime(),
     "utc":unixTime.toUTCString()
   });
 }
   let passDateValue = new Date(dateString);
-  if(passDateValue == "invalid Value"){
+
+  if(passDateValue == "invalid Date"){
   res.json({"error": "Invalid Date"});
-}else{
+}
+ else 
+{ 
   res.json({"unix": passDateValue.getTime(),
-"utc":passDateValue.toUTCString()
+            "utc": passDateValue.toUTCString()
 })
 }
 });
