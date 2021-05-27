@@ -22,11 +22,25 @@ app.get("/", function (req, res) {
 app.get("/timestamp", function(req , res){
   res.sendFile(__dirname + '/views/timestamp.html');
 });
+app.get("/requestHeaderParser", function(req, res){
+  res.sendFile(__dirname + '/views/requestHeaderParser.html');
+});
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   console.log({greeting: "Hello API"});
   res.json({greeting: 'hello API'});
+});
+
+app.get("/api/whoami", function(req, res){
+  res.json({
+    //"Value": Object.keys(req),
+    "ipaddress": req.socket.remoteAddress,
+    "language": req.headers["accept-language"],
+    "software": req.headers["user-agent"]
+    //"req-headers": req.headers
+    
+});
 });
 
 app.get("/api", function(req, res){
@@ -60,6 +74,8 @@ if (parseInt(dateString) > 10000){
 })
 }
 });
+
+
 
 // listen for requests :)
 var listener = app.listen(port, function () {
