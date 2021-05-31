@@ -113,6 +113,7 @@ app.post("/api/shorturl", (req, res)=>{
   let urloriginal= [ client_requested_url];  
 //urloriginal = newURL.original_url;
 
+//chechar dns
 const options = {
   family: 6,
   hints: dns.ADDRCONFIG | dns.V4MAPPED,
@@ -120,40 +121,23 @@ const options = {
   function hostnameExists(hostname) {
     return new Promise((resolve) => {
       dns.lookup(hostname, options, (err,address,family) => resolve({ hostname, exists: !err, address, family}));
-
-      
-    });
-    
-  }
-  
-  
-
- Promise.all(urloriginal.map(hostnameExists)).then((listOfStatuses) => {
+ });
+    }
+  //exibir resuldados do dns
+   Promise.all(urloriginal.map(hostnameExists)).then((listOfStatuses) => {
     // check results here
-   
-    console.log(listOfStatuses);
+     console.log(listOfStatuses);
   });
   
  
-
-
-  let newURL = new ShortURL({
-    short_url: suffix,
+let newURL = new ShortURL({
+    short_url:__dirname + "/api/shorturl/" + suffix,
     original_url:urloriginal[0] ,
     suffix: suffix
   })
 
-
-
- 
-  newURL.save(( err,doc )=>{
+ newURL.save(( err,doc )=>{
     var rest = newURL.original_url.match( /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/i);
-      
-      //(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/);
-      ///(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-      ///^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i);
-      
-      // /^(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
       
    if(err || rest==null){
      res.json({error:'invalid url'})
@@ -170,8 +154,8 @@ const options = {
   });
 });
 
-app.get("/api/shorturl/:short_url", (req, res)=>{
-  let userGeneratedSuffix = req.params.short_url;
+app.get("/api/shorturl/:suffix", (req, res)=>{
+  let userGeneratedSuffix = req.params.suffix;
   ShortURL.find({suffix: userGeneratedSuffix}).then((foundUrls)=> {
     
     let urlForRedirect = foundUrls[0];
