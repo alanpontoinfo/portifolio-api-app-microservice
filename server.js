@@ -138,7 +138,7 @@ const options = {
 
 
   let newURL = new ShortURL({
-    short_url:"/api/shorturl/" + suffix,
+    short_url: suffix,
     original_url:urloriginal[0] ,
     suffix: suffix
   })
@@ -170,7 +170,7 @@ const options = {
   });
 });
 
-app.get("/api/shorturl/:suffix", (req, res)=>{
+app.get("/api/shorturl/:short_url", (req, res)=>{
   let userGeneratedSuffix = req.params.suffix;
   ShortURL.find({suffix: userGeneratedSuffix}).then((foundUrls)=> {
     
