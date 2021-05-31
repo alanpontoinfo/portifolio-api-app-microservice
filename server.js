@@ -1,31 +1,51 @@
+var MONGO_URI='mongodb+srv://namanis:4142mongoose@freecode-alan.1sct0.mongodb.net/freecode-alan?retryWrites=true&w=majority';
 // server.js
 // where your node app starts
 
 // init project
-var express = require('express');
-var app = express();
-var port = process.env.PORT || 3000;
+
+const express = require('express');
+const app = express();
+const mongo= require('mongodb');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const shortid = require('shortid');
+const dns = require('dns');
+const port = process.env.PORT || 3000;
+
+mongoose.set('useNewUrlParser', true);
+//mongoose.set('useFindAndModify', false);
+//mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
+const { hostname } = require('os');
+const { exists } = require('fs');
 app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
 //http://expressjs.com/en/starter/basic-routing.html
+
+mongoose.connect(MONGO_URI);
+
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-app.get("/timestamp", function(req , res){
+app.get("/timestamp", function(req, res){
   res.sendFile(__dirname + '/views/timestamp.html');
 });
 app.get("/requestHeaderParser", function(req, res){
   res.sendFile(__dirname + '/views/requestHeaderParser.html');
 });
 
+app.get("/urlShortenerParser", (req, res)=>{
+  res.sendFile(__dirname + '/views/urlShortenerParser.html');
+});
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   console.log({greeting: "Hello API"});
@@ -74,9 +94,85 @@ if (parseInt(dateString) > 10000){
 })
 }
 });
+// construi um schema e modelo para armazenar url salvada
+const ShortURL = mongoose.model('ShortURL', new mongoose.Schema({
+  short_url: String,
+  original_url: String,
+  suffix: String
+}));
+// analisar applicacao x-www-force-urlencoded
+app.use(express.urlencoded({extended : false}));
+//analisar aplicacao json
+app.use(express.json());
+
+app.post("/api/shorturl", (req, res)=>{
+  let client_requested_url = req.body.url;
+  let suffix = shortid.generate();
+  let newShortURL = suffix;
+
+  let urloriginal= [ client_requested_url];  
+//urloriginal = newURL.original_url;
+
+const options = {
+  family: 6,
+  hints: dns.ADDRCONFIG | dns.V4MAPPED,
+};
+  function hostnameExists(hostname) {
+    return new Promise((resolve) => {
+      dns.lookup(hostname, options, (err,address,family) => resolve({ hostname, exists: !err, address, family}));
+
+      
+    });
+    
+  }
+  
+  
+
+ Promise.all(urloriginal.map(hostnameExists)).then((listOfStatuses) => {
+    // check results here
+   
+    console.log(listOfStatuses);
+  });
+  
+ 
+
+
+  let newURL = new ShortURL({
+    short_url:__dirname + "/api/shorturl/" + suffix,
+    original_url:urloriginal[0] ,
+    suffix: suffix
+  })
 
 
 
+ 
+  newURL.save(( err,doc )=>{
+    var rest = newURL.original_url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+   
+   if(err || rest==null){
+     res.json({error:"Invalid Url"})
+   }
+    else {res.json({
+      "saved": true,
+      "short_url": newURL.short_url,
+      "original_url": newURL.original_url,
+      "suffix": newURL.suffix
+    
+    }); 
+  }
+    
+  });
+});
+
+app.get("/api/shorturl/:suffix", (req, res)=>{
+  let userGeneratedSuffix = req.params.suffix;
+  ShortURL.find({suffix: userGeneratedSuffix}).then((foundUrls)=> {
+    
+    let urlForRedirect = foundUrls[0];
+   
+    res.redirect(urlForRedirect.original_url);
+  });
+});
 // listen for requests :)
 var listener = app.listen(port, function () {
   console.log('Your app is listening on port ' + listener.address().port);
