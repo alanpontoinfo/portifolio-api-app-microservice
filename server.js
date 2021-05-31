@@ -138,7 +138,7 @@ const options = {
 
 
   let newURL = new ShortURL({
-    short_url:__dirname + "/api/shorturl/" + suffix,
+    short_url:"/api/shorturl/" + suffix,
     original_url:urloriginal[0] ,
     suffix: suffix
   })
