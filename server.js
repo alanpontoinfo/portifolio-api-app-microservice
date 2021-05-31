@@ -171,7 +171,7 @@ const options = {
 });
 
 app.get("/api/shorturl/:short_url", (req, res)=>{
-  let userGeneratedSuffix = req.params.suffix;
+  let userGeneratedSuffix = req.params.short_url;
   ShortURL.find({suffix: userGeneratedSuffix}).then((foundUrls)=> {
     
     let urlForRedirect = foundUrls[0];
