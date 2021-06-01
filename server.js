@@ -1,4 +1,4 @@
-var MONGO_URI='mongodb+srv://namanis:4142mongoose@freecode-alan.1sct0.mongodb.net/freecode-alan?retryWrites=true&w=majority';
+var MONGO_URI='mongodb+srv://namanis:*****@freecode-alan.1sct0.mongodb.net/freecode-alan?retryWrites=true&w=majority';
 // server.js
 // where your node app starts
 
@@ -45,6 +45,10 @@ app.get("/requestHeaderParser", function(req, res){
 
 app.get("/urlShortenerParser", (req, res)=>{
   res.sendFile(__dirname + '/views/urlShortenerParser.html');
+});
+
+app.get("/tracker", (req, res)=>{
+  res.sendFile(__dirname + '/views/tracker.html');
 });
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
