@@ -1,30 +1,48 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Exercise Tracker | freeCodeCamp</title>
+    <title>Exercise Tracker | freeCodeCamp@alanpontoinfo</title>
     <link rel="shortcut icon" href="https://cdn.freecodecamp.org/universal/favicons/favicon-32x32.png" type="image/x-icon"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-    <link href="style.css" rel="stylesheet" type="text/css">
+    <!--<link href="style.css" rel="stylesheet" type="text/css">-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
   </head>
 
   <body>
     <div class="container">
+      <div class ="row">
+
+      <div class="col-md-6 offset-md-3">
       <h1>Exercise tracker</h1>
-      <form action="/api/users" method="post">
+      <form action="/tracker/api/users" method="post">
+        
         <h3>Create a New User</h3>
-        <p><code>POST /api/users</code></p>
-        <input id="uname" type="text" name="username" placeholder="username">
-        <input type="submit" value="Submit">
+        <p><code>POST /tracker/api/users</code></p>
+        <input id="uname" type="text" name="username" placeholder="username" class="form-control">
+        <input type="submit" value="Submit" class="btn btn-block btn-primary my-4">
       </form>
-      <form id="exercise-form" method="post">
+      <form id="exercise-form"  method="post">
         <h3>Add exercises</h3>
-        <p><code>POST /api/users/:_id/exercises</code></p>
-        <input id="uid" type="text" name=":_id" placeholder=":_id">
-        <input id="desc" type="text" name="description" placeholder="description*">
-        <input id="dur" type="text" name="duration" placeholder="duration* (mins.)">
-        <input id="dat" type="text" name="date" placeholder="date (yyyy-mm-dd)">
-        <input type="submit" value="Submit">
+        <p><code>POST /tracker/api/users/:_id/exercises</code></p>
+        <div class="form-group">
+        <input id="uid" type="text" name=":_id" placeholder=":_id" class="form-control">
+        </div>
+        <div class="form-group">
+        <input id="desc" type="text" name="description" placeholder="description*" class="form-control">
+      </div>
+      <div class="form-group">
+        <input id="dur" type="text" name="duration" placeholder="duration* (mins.)" class="form-control">
+      </div>
+      <div class="form-group">
+        <input id="dat" type="text" name="date" placeholder="date (yyyy-mm-dd)" class="form-control"> 
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-block btn-primary">
+      </div>
+
       </form>
+    
       <p>
         <strong>GET user's exercise log: </strong>
         <code>GET /api/users/:_id/logs?[&amp;from][&amp;to][&amp;limit]</code>
@@ -32,15 +50,21 @@
       <p><strong>[ ]</strong> = optional</p>
       <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
     </div>
-    <script>
-      const exerciseForm = document.getElementById("exercise-form");
+  </div>
+</div>
+<script>
+  const exerciseForm = document.getElementById("exercise-form");
 
-      exerciseForm.addEventListener("submit", () => {
-        const userId = document.getElementById("uid").value;
-        exerciseForm.action = `/api/users/${userId}/exercises`;
+  exerciseForm.addEventListener("submit", () => {
+    const userId = document.getElementById("uid").value;
+    exerciseForm.action = `/tracker/api/users/${userId}/exercises`;
 
-        exerciseForm.submit();
-      });
-    </script>
+    exerciseForm.submit();
+  });
+</script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+    
   </body>
 </html>
